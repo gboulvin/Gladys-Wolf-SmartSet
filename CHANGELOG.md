@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-25
+
 ### Added
 
 - Wolf SmartSet integration: sign-in to the Wolf SmartSet cloud with the
@@ -31,4 +33,5 @@ the notes of the version's GitHub Release.
   Spanish, and an expert mode publishing every parameter of the controller.
 - Interface and documentation in English, French, German and Spanish.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-Wolf-SmartSet/commits/main
+[Unreleased]: https://github.com/gboulvin/Gladys-Wolf-SmartSet/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gboulvin/Gladys-Wolf-SmartSet/releases/tag/v1.0.0

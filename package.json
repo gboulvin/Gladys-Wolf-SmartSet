@@ -1,6 +1,6 @@
 {
   "name": "gladys-wolf-smartset",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Wolf SmartSet integration for Gladys Assistant: monitor and control Wolf boilers and heat pumps.",
   "type": "module",
