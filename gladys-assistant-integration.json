@@ -1,0 +1,540 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Wolf SmartSet",
+  "description": {
+    "en": "Monitor and control your Wolf boilers and heat pumps through Wolf SmartSet.",
+    "fr": "Supervisez et pilotez vos chaudières et pompes à chaleur Wolf via Wolf SmartSet.",
+    "de": "Überwachen und steuern Sie Ihre Wolf-Heizkessel und Wärmepumpen über Wolf SmartSet.",
+    "es": "Supervise y controle sus calderas y bombas de calor Wolf con Wolf SmartSet."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-wolf-smartset:0.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-Wolf-SmartSet/main/cover.png",
+  "categories": ["climate", "energy"],
+  "transports": ["cloud"],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Getting started",
+        "fr": "Pour commencer",
+        "de": "Erste Schritte",
+        "es": "Primeros pasos"
+      },
+      "description": {
+        "en": "Your Wolf heating system must be connected to Wolf SmartSet (ISM7, Link home or Link pro gateway). Sign in with the account of the Wolf SmartSet app or portal: the integration reads the boiler values from the Wolf cloud and writes the setpoints and modes back.",
+        "fr": "Votre installation de chauffage Wolf doit être connectée à Wolf SmartSet (passerelle ISM7, Link home ou Link pro). Connectez-vous avec le compte de l’application ou du portail Wolf SmartSet : l’intégration lit les valeurs de la chaudière dans le cloud Wolf et y écrit les consignes et les modes.",
+        "de": "Ihre Wolf-Heizungsanlage muss mit Wolf SmartSet verbunden sein (Gateway ISM7, Link home oder Link pro). Melden Sie sich mit dem Konto der Wolf-SmartSet-App oder des Portals an: Die Integration liest die Kesselwerte aus der Wolf-Cloud und schreibt Sollwerte und Betriebsarten zurück.",
+        "es": "Su instalación de calefacción Wolf debe estar conectada a Wolf SmartSet (pasarela ISM7, Link home o Link pro). Inicie sesión con la cuenta de la aplicación o del portal Wolf SmartSet: la integración lee los valores de la caldera en la nube Wolf y escribe en ella las consignas y los modos."
+      },
+      "links": [
+        {
+          "url": "https://www.wolf-smartset.com",
+          "label": {
+            "en": "Wolf SmartSet portal",
+            "fr": "Portail Wolf SmartSet",
+            "de": "Wolf-SmartSet-Portal",
+            "es": "Portal Wolf SmartSet"
+          }
+        }
+      ]
+    },
+    {
+      "key": "username",
+      "type": "string",
+      "label": {
+        "en": "Username",
+        "fr": "Identifiant",
+        "de": "Benutzername",
+        "es": "Usuario"
+      },
+      "description": {
+        "en": "The username of your Wolf SmartSet account.",
+        "fr": "L’identifiant de votre compte Wolf SmartSet.",
+        "de": "Der Benutzername Ihres Wolf-SmartSet-Kontos.",
+        "es": "El usuario de su cuenta Wolf SmartSet."
+      },
+      "placeholder": {
+        "en": "e.g. john.doe",
+        "fr": "ex. jean.dupont",
+        "de": "z. B. max.mustermann",
+        "es": "p. ej. juan.perez"
+      },
+      "required": true
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
+      "description": {
+        "en": "Wolf SmartSet accepts passwords of 30 characters at most.",
+        "fr": "Wolf SmartSet accepte des mots de passe de 30 caractères au plus.",
+        "de": "Wolf SmartSet akzeptiert Passwörter mit höchstens 30 Zeichen.",
+        "es": "Wolf SmartSet acepta contraseñas de 30 caracteres como máximo."
+      },
+      "required": true
+    },
+    {
+      "key": "language",
+      "type": "select",
+      "label": {
+        "en": "Language of the parameter names",
+        "fr": "Langue des noms de paramètres",
+        "de": "Sprache der Parameternamen",
+        "es": "Idioma de los nombres de parámetros"
+      },
+      "description": {
+        "en": "The names of the features, translated by Wolf SmartSet.",
+        "fr": "Les noms des fonctionnalités, traduits par Wolf SmartSet.",
+        "de": "Die Namen der Funktionen, übersetzt von Wolf SmartSet.",
+        "es": "Los nombres de las funciones, traducidos por Wolf SmartSet."
+      },
+      "required": false,
+      "default": "en",
+      "options": [
+        {
+          "value": "en",
+          "label": { "en": "English", "fr": "Anglais", "de": "Englisch", "es": "Inglés" }
+        },
+        {
+          "value": "fr",
+          "label": { "en": "French", "fr": "Français", "de": "Französisch", "es": "Francés" }
+        },
+        {
+          "value": "de",
+          "label": { "en": "German", "fr": "Allemand", "de": "Deutsch", "es": "Alemán" }
+        },
+        {
+          "value": "es",
+          "label": { "en": "Spanish", "fr": "Espagnol", "de": "Spanisch", "es": "Español" }
+        }
+      ]
+    },
+    {
+      "key": "expert_mode",
+      "type": "boolean",
+      "label": {
+        "en": "Expert mode",
+        "fr": "Mode expert",
+        "de": "Expertenmodus",
+        "es": "Modo experto"
+      },
+      "description": {
+        "en": "Publish every parameter of the controller, not only those of the end-user view.",
+        "fr": "Publie tous les paramètres du régulateur, pas seulement ceux de la vue utilisateur.",
+        "de": "Veröffentlicht alle Parameter des Reglers, nicht nur die der Benutzeransicht.",
+        "es": "Publica todos los parámetros del regulador, no solo los de la vista de usuario."
+      },
+      "required": false,
+      "default": false
+    },
+    {
+      "key": "poll_frequency",
+      "type": "number",
+      "label": {
+        "en": "Refresh interval (s)",
+        "fr": "Intervalle de rafraîchissement (s)",
+        "de": "Aktualisierungsintervall (s)",
+        "es": "Intervalo de actualización (s)"
+      },
+      "description": {
+        "en": "How often the values are read from the Wolf cloud, in seconds (one minute minimum).",
+        "fr": "Fréquence de lecture des valeurs dans le cloud Wolf, en secondes (une minute minimum).",
+        "de": "Wie oft die Werte aus der Wolf-Cloud gelesen werden, in Sekunden (mindestens eine Minute).",
+        "es": "Frecuencia de lectura de los valores en la nube Wolf, en segundos (un minuto como mínimo)."
+      },
+      "required": false,
+      "default": 120,
+      "min": 60,
+      "max": 3600
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "timeout_seconds": 60
+    },
+    {
+      "key": "list_parameters",
+      "label": {
+        "en": "List the writable parameters",
+        "fr": "Lister les paramètres modifiables",
+        "de": "Änderbare Parameter auflisten",
+        "es": "Listar los parámetros modificables"
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" },
+          "required": true
+        }
+      ]
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "gateway_status_changed",
+      "label": {
+        "en": "Wolf gateway connection changed",
+        "fr": "Connexion de la passerelle Wolf modifiée",
+        "de": "Verbindung des Wolf-Gateways geändert",
+        "es": "Conexión de la pasarela Wolf modificada"
+      },
+      "description": {
+        "en": "The gateway of a Wolf system went online or offline.",
+        "fr": "La passerelle d’une installation Wolf s’est connectée ou déconnectée.",
+        "de": "Das Gateway einer Wolf-Anlage ist online oder offline gegangen.",
+        "es": "La pasarela de una instalación Wolf se ha conectado o desconectado."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" }
+        },
+        {
+          "key": "status",
+          "type": "multi_select",
+          "label": { "en": "Status", "fr": "État", "de": "Status", "es": "Estado" },
+          "options": [
+            {
+              "value": "online",
+              "label": { "en": "Online", "fr": "En ligne", "de": "Online", "es": "En línea" }
+            },
+            {
+              "value": "offline",
+              "label": {
+                "en": "Offline",
+                "fr": "Hors ligne",
+                "de": "Offline",
+                "es": "Desconectada"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "status",
+          "type": "string",
+          "label": { "en": "Status", "fr": "État", "de": "Status", "es": "Estado" }
+        }
+      ]
+    },
+    {
+      "key": "mode_changed",
+      "label": {
+        "en": "Wolf mode or state changed",
+        "fr": "Mode ou état Wolf modifié",
+        "de": "Wolf-Betriebsart oder -Status geändert",
+        "es": "Modo o estado Wolf modificado"
+      },
+      "description": {
+        "en": "A parameter with choices (operating mode, program, burner state...) took a new value.",
+        "fr": "Un paramètre à choix (mode de fonctionnement, programme, état du brûleur...) a changé.",
+        "de": "Ein Auswahlparameter (Betriebsart, Programm, Brennerstatus...) hat einen neuen Wert.",
+        "es": "Un parámetro con opciones (modo de funcionamiento, programa, estado del quemador...) cambió."
+      },
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" }
+        }
+      ],
+      "variables": [
+        {
+          "key": "parameter",
+          "type": "string",
+          "label": { "en": "Parameter", "fr": "Paramètre", "de": "Parameter", "es": "Parámetro" }
+        },
+        {
+          "key": "parameter_id",
+          "type": "string",
+          "label": {
+            "en": "Parameter identifier",
+            "fr": "Identifiant du paramètre",
+            "de": "Parameterkennung",
+            "es": "Identificador del parámetro"
+          }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "New value",
+            "fr": "Nouvelle valeur",
+            "de": "Neuer Wert",
+            "es": "Nuevo valor"
+          }
+        },
+        {
+          "key": "previous_value",
+          "type": "string",
+          "label": {
+            "en": "Previous value",
+            "fr": "Valeur précédente",
+            "de": "Vorheriger Wert",
+            "es": "Valor anterior"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "refresh_system",
+      "label": {
+        "en": "Read a Wolf system now",
+        "fr": "Lire une installation Wolf maintenant",
+        "de": "Wolf-Anlage jetzt abfragen",
+        "es": "Leer una instalación Wolf ahora"
+      },
+      "description": {
+        "en": "Read every value of the system without waiting for the refresh interval.",
+        "fr": "Lit toutes les valeurs de l’installation sans attendre l’intervalle de rafraîchissement.",
+        "de": "Liest alle Werte der Anlage, ohne das Aktualisierungsintervall abzuwarten.",
+        "es": "Lee todos los valores de la instalación sin esperar el intervalo de actualización."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "online",
+          "type": "boolean",
+          "label": {
+            "en": "Gateway online",
+            "fr": "Passerelle en ligne",
+            "de": "Gateway online",
+            "es": "Pasarela en línea"
+          }
+        },
+        {
+          "key": "values_read",
+          "type": "number",
+          "label": {
+            "en": "Values read",
+            "fr": "Valeurs lues",
+            "de": "Gelesene Werte",
+            "es": "Valores leídos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_parameter",
+      "label": {
+        "en": "Change a Wolf parameter",
+        "fr": "Modifier un paramètre Wolf",
+        "de": "Wolf-Parameter ändern",
+        "es": "Cambiar un parámetro Wolf"
+      },
+      "description": {
+        "en": "Write a setpoint, a mode or any writable parameter of the system.",
+        "fr": "Écrit une consigne, un mode ou tout paramètre modifiable de l’installation.",
+        "de": "Schreibt einen Sollwert, eine Betriebsart oder einen änderbaren Parameter der Anlage.",
+        "es": "Escribe una consigna, un modo o cualquier parámetro modificable de la instalación."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" },
+          "required": true
+        },
+        {
+          "key": "parameter",
+          "type": "string",
+          "label": {
+            "en": "Parameter (name or identifier)",
+            "fr": "Paramètre (nom ou identifiant)",
+            "de": "Parameter (Name oder Kennung)",
+            "es": "Parámetro (nombre o identificador)"
+          },
+          "placeholder": {
+            "en": "e.g. 2000000007",
+            "fr": "ex. 2000000007",
+            "de": "z. B. 2000000007",
+            "es": "p. ej. 2000000007"
+          },
+          "required": true
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": { "en": "Value", "fr": "Valeur", "de": "Wert", "es": "Valor" },
+          "placeholder": {
+            "en": "e.g. 21.5 or Eco",
+            "fr": "ex. 21.5 ou Eco",
+            "de": "z. B. 21.5 oder Eco",
+            "es": "p. ej. 21.5 o Eco"
+          },
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "key": "parameter",
+          "type": "string",
+          "label": { "en": "Parameter", "fr": "Paramètre", "de": "Parameter", "es": "Parámetro" }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": {
+            "en": "Written value",
+            "fr": "Valeur écrite",
+            "de": "Geschriebener Wert",
+            "es": "Valor escrito"
+          }
+        }
+      ]
+    },
+    {
+      "key": "read_parameter",
+      "label": {
+        "en": "Read a Wolf parameter",
+        "fr": "Lire un paramètre Wolf",
+        "de": "Wolf-Parameter lesen",
+        "es": "Leer un parámetro Wolf"
+      },
+      "description": {
+        "en": "Make the value of one parameter available to the following actions of the scene.",
+        "fr": "Rend la valeur d’un paramètre disponible pour les actions suivantes de la scène.",
+        "de": "Stellt den Wert eines Parameters den folgenden Aktionen der Szene bereit.",
+        "es": "Pone el valor de un parámetro a disposición de las siguientes acciones de la escena."
+      },
+      "timeout_seconds": 60,
+      "fields": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" },
+          "required": true
+        },
+        {
+          "key": "parameter",
+          "type": "string",
+          "label": {
+            "en": "Parameter (name or identifier)",
+            "fr": "Paramètre (nom ou identifiant)",
+            "de": "Parameter (Name oder Kennung)",
+            "es": "Parámetro (nombre o identificador)"
+          },
+          "placeholder": {
+            "en": "e.g. Outside temperature",
+            "fr": "ex. Température extérieure",
+            "de": "z. B. Außentemperatur",
+            "es": "p. ej. Temperatura exterior"
+          },
+          "required": true
+        },
+        {
+          "key": "refresh",
+          "type": "boolean",
+          "label": {
+            "en": "Read the system first",
+            "fr": "Lire l’installation d’abord",
+            "de": "Anlage zuerst abfragen",
+            "es": "Leer la instalación primero"
+          },
+          "default": false
+        }
+      ],
+      "outputs": [
+        {
+          "key": "found",
+          "type": "boolean",
+          "label": {
+            "en": "Parameter found",
+            "fr": "Paramètre trouvé",
+            "de": "Parameter gefunden",
+            "es": "Parámetro encontrado"
+          }
+        },
+        {
+          "key": "parameter",
+          "type": "string",
+          "label": { "en": "Parameter", "fr": "Paramètre", "de": "Parameter", "es": "Parámetro" }
+        },
+        {
+          "key": "value",
+          "type": "string",
+          "label": { "en": "Value", "fr": "Valeur", "de": "Wert", "es": "Valor" }
+        },
+        {
+          "key": "raw_value",
+          "type": "string",
+          "label": { "en": "Raw value", "fr": "Valeur brute", "de": "Rohwert", "es": "Valor bruto" }
+        },
+        {
+          "key": "numeric_value",
+          "type": "number",
+          "label": {
+            "en": "Numeric value",
+            "fr": "Valeur numérique",
+            "de": "Numerischer Wert",
+            "es": "Valor numérico"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "wolf_system",
+      "label": {
+        "en": "Wolf system",
+        "fr": "Installation Wolf",
+        "de": "Wolf-Anlage",
+        "es": "Instalación Wolf"
+      },
+      "description": {
+        "en": "Main temperatures, gateway connection and operating modes of a Wolf system.",
+        "fr": "Températures principales, connexion de la passerelle et modes d’une installation Wolf.",
+        "de": "Haupttemperaturen, Gateway-Verbindung und Betriebsarten einer Wolf-Anlage.",
+        "es": "Temperaturas principales, conexión de la pasarela y modos de una instalación Wolf."
+      },
+      "icon": "thermometer",
+      "settings": [
+        {
+          "key": "device",
+          "type": "select",
+          "source": "devices",
+          "label": { "en": "System", "fr": "Installation", "de": "Anlage", "es": "Instalación" }
+        }
+      ],
+      "action_timeout_seconds": 60
+    }
+  ]
+}
